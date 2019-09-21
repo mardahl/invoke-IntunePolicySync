@@ -4,11 +4,12 @@
 Starts Intune Policy Sync
 .REQUIREMENTS
 This script myst be run as the user
-Giving AdminConset by running these two lines manually first time as a global admin (tenant wide fix)
+Giving AdminConset by running these three lines manually first time as a global admin from an admin PowerShell prompt (tenant wide fix)
+    Install-Module -Name Microsoft.Graph.Intune
     Import-Module -Name Microsoft.Graph.Intune
-    Connect-MSGraph -adminconsent -ForceNonInteractive # change the switch to -AdminConsent
+    Connect-MSGraph -AdminConsent
 .EXAMPLE
-Just run the script sync-intunePolicy.ps1 without any parameters, as the user enrolling the device.
+Just run the script sync-intunePolicy.ps1 without any parameters, as the user enroling the device.
 .COPYRIGHT
 MIT License, feel free to distribute and use as you like, please leave author information.
 .AUTHOR
@@ -21,18 +22,37 @@ This script is provided AS-IS, with no warranty - Use at own risk!
 Start-Transcript "$($env:temp)\script_sync-intunePolicy_log.txt" -Force
 
 Write-Output "Importing Powershell modules for Intune"
-Import-Module -Name Microsoft.Graph.Intune
+try { 
+    Import-Module -Name Microsoft.Graph.Intune -ErrorAction Stop
+} 
+catch {
+    Write-Output "Microsoft.Graph.Intune module not found in common module path, installing in the current user scope..."
+    Install-Module -Name Microsoft.Graph.Intune -Scope CurrentUser -Force
+    Import-Module Microsoft.Graph.Intune -Force
+}
 
 Write-Output "Connecting to Graph"
-Connect-MSGraph -adminconsent -ForceNonInteractive # change the switch to -AdminConsent when first running this command in your tenant to disable future prompts
+try {
+    Connect-MSGraph -ForceNonInteractive -ErrorAction Stop
+    # change the switch to -AdminConsent when first running this command in your tenant to disable future prompts
+} catch {
+    Write-Error "Failed to connect to MSGraph! Did you remember to give Admin Consent?"
+    Exit 1
+}
 
 Write-Output "Looking up device..."
-$IntuneDevice = get-intunemanageddevice | Where-Object deviceName -Like $env:COMPUTERNAME
-if ($IntuneDevice -ne $null){
-    Write-Output "Sending sync signal to Intune"
-    $IntuneDevice | Invoke-IntuneManagedDeviceSyncDevice
+try {
+    $deviceObj = get-intunemanageddevice | Where-Object deviceName -Like $env:COMPUTERNAME
+} catch {
+    Write-Error "Failed to fetch device! Permissions or Admin Consent issue perhaps?"
+    Exit 1
+}
+
+if ($deviceObj -ne $null){
+    Write-Output "Sending sync signal to Intune Device"
+    $deviceObj | Invoke-IntuneManagedDeviceSyncDevice -ErrorAction Stop
 } else {
-    Write-Output "Device not found in intune"
+    Write-Output "Device not found in intune (You might want to verify this manually in the Intune Portal)"
 }
 
 Write-Output "Done."
