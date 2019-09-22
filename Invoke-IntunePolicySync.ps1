@@ -9,7 +9,7 @@ Giving AdminConset by running these three lines manually first time as a global 
     Import-Module -Name Microsoft.Graph.Intune
     Connect-MSGraph -AdminConsent
 .EXAMPLE
-Just run the script sync-intunePolicy.ps1 without any parameters, as the user enroling the device.
+Just run the script Invoke-IntunePolicySync.ps1 without any parameters, as the user enroling the device.
 .COPYRIGHT
 MIT License, feel free to distribute and use as you like, please leave author information.
 .AUTHOR
@@ -19,7 +19,7 @@ This script is provided AS-IS, with no warranty - Use at own risk!
 #>
 
 #Starting a log, just in case...
-Start-Transcript "$($env:temp)\script_sync-intunePolicy_log.txt" -Force
+Start-Transcript "$($env:temp)\script_Invoke-IntunePolicySync.ps1_log.txt" -Force
 
 Write-Output "Importing Powershell modules for Intune"
 try { 
