@@ -3,7 +3,7 @@
 .SYNOPSIS
 Starts Intune Policy Sync
 .REQUIREMENTS
-This script myst be run as the user
+This script must be run as the user
 Giving AdminConset by running these three lines manually first time as a global admin from an admin PowerShell prompt (tenant wide fix)
     Install-Module -Name Microsoft.Graph.Intune
     Import-Module -Name Microsoft.Graph.Intune
