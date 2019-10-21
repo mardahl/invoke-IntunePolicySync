@@ -1,5 +1,8 @@
 # Invoke-IntunePolicySync
  A script to force the sync of Intune MDM Policies on a Windows 10 Device during first logon
+ 
+# Invoke-IntunePolicySyncOniOSAndAndroid
+ A script to bulk force update policies on all iOS and Android devices in your tenant
 
  **Read the comments in the script in order to use it sucessfully**
 
