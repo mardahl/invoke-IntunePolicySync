@@ -10,7 +10,7 @@ an admin PowerShell prompt (tenant wide fix)
     Import-Module -Name Microsoft.Graph.Intune
     Connect-MSGraph -AdminConsent
 .EXAMPLE
-Just run the script Invoke-IntunePolicySyncOniOSAndAndroid.ps1 without any parameters, as the user enroling the device.
+Just run the script Invoke-IntunePolicySyncOniOSAndAndroid.ps1 without any parameters, preferably as an Intune Admin.
 .COPYRIGHT
 MIT License, feel free to distribute and use as you like, please leave author information.
 .AUTHOR
